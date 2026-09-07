@@ -49,11 +49,12 @@ openclaw config set gateway.mode local
 
 echo "Configuring Z.AI..."
 
-openclaw config set models.providers.zai --strict-json --merge '{
-  "baseUrl": "https://api.z.ai/api/coding/paas/v4",
-  "apiKey": "${ZAI_API_KEY}",
-  "api": "openai-completions"
-}'
+# Uses double quotes so ${ZAI_API_KEY} resolves to your actual environment variable
+openclaw config set models.providers.zai --strict-json --merge "{
+  \"baseUrl\": \"https://api.z.ai/api/coding/paas/v4\",
+  \"apiKey\": \"${ZAI_API_KEY}\",
+  \"api\": \"openai-completions\"
+}"
 
 # --------------------------------------------------
 # Default model
