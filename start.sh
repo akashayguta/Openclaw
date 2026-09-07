@@ -13,24 +13,30 @@ echo "================================="
 openclaw --version
 
 # --------------------------------------------------
-# AGENTS.md
-# Copy the GitHub version to the persistent disk
-# only on first initialization.
+# Workspace
 # --------------------------------------------------
 
-if [ ! -f "$WORKSPACE/AGENTS.md" ]; then
-    if [ -f "/app/AGENTS.md" ]; then
-        cp "/app/AGENTS.md" "$WORKSPACE/AGENTS.md"
-        echo "AGENTS.md installed."
-    else
-        echo "WARNING: /app/AGENTS.md not found."
-    fi
+echo "Configuring workspace..."
+
+openclaw config set agents.defaults.workspace "$WORKSPACE"
+
+# --------------------------------------------------
+# AGENTS.md — Global workspace instructions
+# --------------------------------------------------
+
+if [ -f "/app/AGENTS.md" ]; then
+    cp "/app/AGENTS.md" "$WORKSPACE/AGENTS.md"
+    echo "AGENTS.md applied successfully."
 else
-    echo "Existing AGENTS.md found. Keeping it."
+    echo "ERROR: /app/AGENTS.md was not found."
+    exit 1
 fi
 
+echo "Global prompt:"
+echo "$WORKSPACE/AGENTS.md"
+
 # --------------------------------------------------
-# Gateway configuration
+# Gateway
 # --------------------------------------------------
 
 echo "Configuring Gateway..."
@@ -50,7 +56,7 @@ openclaw config set models.providers.zai --strict-json --merge '{
 }'
 
 # --------------------------------------------------
-# Default AI model
+# Default model
 # --------------------------------------------------
 
 echo "Setting GLM-5.3..."
@@ -77,18 +83,31 @@ openclaw config set channels.telegram.allowFrom \
     --strict-json "[\"${TELEGRAM_USER_ID}\"]"
 
 # --------------------------------------------------
-# Final information
+# Verify configuration
 # --------------------------------------------------
 
 echo "================================="
-echo "Configuration complete."
-echo "Workspace: $WORKSPACE"
-echo "Model: zai/glm-5.3"
-echo "Telegram allowlist: enabled"
+echo "Configuration complete"
+echo "================================="
+
+echo "Workspace:"
+echo "$WORKSPACE"
+
+echo "AGENTS.md:"
+ls -lh "$WORKSPACE/AGENTS.md"
+
+echo "Model:"
+openclaw config get agents.defaults.model.primary
+
+echo "Gateway mode:"
+openclaw config get gateway.mode
+
+echo "================================="
+echo "Starting OpenClaw Gateway..."
 echo "================================="
 
 # --------------------------------------------------
-# Start OpenClaw Gateway
+# Start Gateway
 # --------------------------------------------------
 
 exec openclaw gateway run --port 18789 --verbose
