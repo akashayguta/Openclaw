@@ -21,21 +21,6 @@ echo "Configuring workspace..."
 openclaw config set agents.defaults.workspace "$WORKSPACE"
 
 # --------------------------------------------------
-# AGENTS.md — Global workspace instructions
-# --------------------------------------------------
-
-if [ -f "/app/AGENTS.md" ]; then
-    cp "/app/AGENTS.md" "$WORKSPACE/AGENTS.md"
-    echo "AGENTS.md applied successfully."
-else
-    echo "ERROR: /app/AGENTS.md was not found."
-    exit 1
-fi
-
-echo "Global prompt:"
-echo "$WORKSPACE/AGENTS.md"
-
-# --------------------------------------------------
 # Gateway
 # --------------------------------------------------
 
@@ -49,7 +34,6 @@ openclaw config set gateway.mode local
 
 echo "Configuring Z.AI..."
 
-# Uses double quotes so ${ZAI_API_KEY} resolves to your actual environment variable
 openclaw config set models.providers.zai --strict-json --merge "{
   \"baseUrl\": \"https://api.z.ai/api/coding/paas/v4\",
   \"apiKey\": \"${ZAI_API_KEY}\",
@@ -93,9 +77,6 @@ echo "================================="
 
 echo "Workspace:"
 echo "$WORKSPACE"
-
-echo "AGENTS.md:"
-ls -lh "$WORKSPACE/AGENTS.md"
 
 echo "Model:"
 openclaw config get agents.defaults.model.primary
