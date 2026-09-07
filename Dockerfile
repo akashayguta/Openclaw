@@ -9,10 +9,7 @@ ENV OPENCLAW_HOME=/data/.openclaw
 
 RUN mkdir -p /data/.openclaw/workspace
 
-# Copy instructions file and startup script into the container
-COPY AGENTS.md /app/AGENTS.md
 COPY start.sh /app/start.sh
-
 RUN chmod +x /app/start.sh
 
 CMD ["/app/start.sh"]
